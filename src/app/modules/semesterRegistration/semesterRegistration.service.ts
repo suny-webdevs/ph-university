@@ -5,6 +5,17 @@ import { ISemesterRegistration } from "./semesterRegistration.interface"
 import { SemesterRegistration } from "./semesterRegistration.model"
 
 const createSemesterRegistration = async (payload: ISemesterRegistration) => {
+  const isUpcomingOrOngoingSemesterExists = await SemesterRegistration.findOne({
+    $or: [{ status: "UPCOMING" }, { status: "ON-GOING" }],
+  })
+
+  if (isUpcomingOrOngoingSemesterExists) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `There is already an ${isUpcomingOrOngoingSemesterExists.status} registered semester exists`
+    )
+  }
+
   const academicSemester = payload?.academicSemester
   const isAcademicSemesterExists = await AcademicSemester.findById(
     academicSemester

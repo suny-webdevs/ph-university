@@ -1,8 +1,10 @@
 import QueryBuilder from "../../builder/QueryBuilder"
 import AppError from "../../errors/AppError"
 import { AcademicSemester } from "../academicSemester/academicSemester.model"
+import { SemesterRegistrationStatus } from "./semesterRegistration.constant"
 import { ISemesterRegistration } from "./semesterRegistration.interface"
 import { SemesterRegistration } from "./semesterRegistration.model"
+import httpStatus from "http-status"
 
 const createSemesterRegistration = async (payload: ISemesterRegistration) => {
   const isUpcomingOrOngoingSemesterExists = await SemesterRegistration.findOne({
@@ -60,8 +62,44 @@ const updateSemesterRegistration = async (
   id: string,
   payload: Partial<ISemesterRegistration>
 ) => {
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id)
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Semester registration not found!")
+  }
+
+  const currentSemesterStatus = isSemesterRegistrationExists?.status
+  const requestSemesterStatus = payload?.status
+
+  if (currentSemesterStatus === SemesterRegistrationStatus.ENDED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Cannot update an ended semester registration!"
+    )
+  }
+
+  if (
+    currentSemesterStatus === SemesterRegistrationStatus.ONGOING &&
+    requestSemesterStatus === SemesterRegistrationStatus.UPCOMING
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Cannot update an ${currentSemesterStatus} semester registration to ${requestSemesterStatus}!`
+    )
+  }
+
+  if (
+    currentSemesterStatus === SemesterRegistrationStatus.UPCOMING &&
+    requestSemesterStatus === SemesterRegistrationStatus.ENDED
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Cannot update an ${currentSemesterStatus} semester registration to ${requestSemesterStatus}!`
+    )
+  }
+
   const data = await SemesterRegistration.findByIdAndUpdate(id, payload, {
     new: true,
+    runValidators: true,
   })
   return data
 }

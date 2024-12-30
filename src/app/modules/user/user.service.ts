@@ -33,6 +33,7 @@ const createUser = async (password: string, payload: IStudent) => {
     session.startTransaction()
 
     user.id = await generateStudentId(admissionSemester as IAcademicSemester)
+    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -74,6 +75,7 @@ const createFaculty = async (password: string, payload: IFaculty) => {
     session.startTransaction()
 
     user.id = await generateFacultyId()
+    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -115,6 +117,7 @@ const createAdmin = async (password: string, payload: IAdmin) => {
     session.startTransaction()
 
     user.id = await generateAdminId()
+    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -128,7 +131,7 @@ const createAdmin = async (password: string, payload: IAdmin) => {
 
     // Create a admin
     const newAdmin = await Admin.create([payload], { session })
-
+    console.log("service : ", newAdmin)
     if (!newAdmin.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create faculty")
     }
@@ -144,8 +147,14 @@ const createAdmin = async (password: string, payload: IAdmin) => {
   }
 }
 
+const getAllUser = async () => {
+  const data = await User.find()
+  return data
+}
+
 export const UserServices = {
   createUser,
   createFaculty,
   createAdmin,
+  getAllUser,
 }

@@ -70,7 +70,7 @@ const createOfferedCourse = async (payload: IOfferedCourse) => {
   if (!isDepartmentBelongToFaculty) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      `This ${isAcademicDepartmentExist.name} is not  belong to this ${isAcademicFacultyExist.name}`
+      `This ${isAcademicDepartmentExist?.name} is not  belong to this ${isAcademicFacultyExist.name}`
     )
   }
 

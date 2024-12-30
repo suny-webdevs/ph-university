@@ -1,9 +1,9 @@
 import { model, Schema } from "mongoose"
-import { IUser } from "./user.interface"
+import { IUser, UserModel } from "./user.interface"
 import bcrypt from "bcrypt"
 import config from "../../config"
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, UserModel>(
   {
     id: { type: String, require: [true, "Id is required"] },
     role: {
@@ -22,11 +22,18 @@ const userSchema = new Schema<IUser>(
       },
       default: "in-progress",
     },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+    },
     password: {
       type: String,
       required: [true, "Password is required"],
+      select: 0,
     },
     changePassword: { type: Boolean, default: true },
+    passwordChangedAt: { type: Date },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
@@ -43,4 +50,19 @@ userSchema.post("save", function (doc, next) {
   next()
 })
 
-export const User = model<IUser>("User", userSchema)
+userSchema.statics.isPasswordMatched = async function (
+  textedPassword,
+  hashedPassword
+) {
+  return await bcrypt.compare(textedPassword, hashedPassword)
+}
+
+userSchema.statics.isTokenValidForChangePassword = function (
+  changePasswordTime,
+  jwtIssuedTime
+) {
+  const changedPasswordTime = new Date(changePasswordTime).getTime() / 1000
+  return changedPasswordTime > jwtIssuedTime
+}
+
+export const User = model<IUser, UserModel>("User", userSchema)

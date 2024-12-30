@@ -1,9 +1,6 @@
 import { UserServices } from "./user.service"
 import sendResponse from "../../utils/sendResponse"
 import catchAsync from "../../utils/catchAsync"
-import AppError from "../../errors/AppError"
-import httpStatus from "http-status"
-import { IStudent } from "../student/students.interface"
 
 const createUser = catchAsync(async (req, res) => {
   const { password, student } = req.body
@@ -20,6 +17,12 @@ const createFaculty = catchAsync(async (req, res) => {
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin } = req.body
   const data = await UserServices.createAdmin(password, admin)
+  // console.log("controller : ", data)
+  sendResponse(res, "Admin created", data)
+})
+
+const getAllUser = catchAsync(async (req, res) => {
+  const data = await UserServices.getAllUser()
   sendResponse(res, "Admin created", data)
 })
 
@@ -27,4 +30,5 @@ export const UserControllers = {
   createUser,
   createFaculty,
   createAdmin,
+  getAllUser,
 }

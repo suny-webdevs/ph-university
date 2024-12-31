@@ -21,12 +21,16 @@ router.post(
 router.post(
   "/create-faculty",
   auth("admin"),
+  upload.single("file"),
+  textToJson(),
   validateRequest(createFacultyValidationSchema),
   UserControllers.createFaculty
 )
 router.post(
   "/create-admin",
   // auth("admin"),
+  upload.single("file"),
+  textToJson(),
   validateRequest(createAdminValidationSchema),
   UserControllers.createAdmin
 )

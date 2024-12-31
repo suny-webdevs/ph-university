@@ -74,7 +74,11 @@ const createUser = async (file: any, password: string, payload: IStudent) => {
 }
 
 //* Create faculty
-const createFaculty = async (password: string, payload: IFaculty) => {
+const createFaculty = async (
+  file: any,
+  password: string,
+  payload: IFaculty
+) => {
   const user: Partial<IUser> = {}
 
   user.password = password || (config.default_password as string)
@@ -87,6 +91,12 @@ const createFaculty = async (password: string, payload: IFaculty) => {
 
     user.id = await generateFacultyId()
 
+    const imageName = `${(payload?.name?.firstName)
+      .toLowerCase()
+      .split(" ")
+      .join("_")}_${user.id}`
+    const { secure_url } = await sendImageToCloudinary(imageName, file?.path)
+
     // Create a user
     const newUser = await User.create([user], { session })
 
@@ -96,6 +106,7 @@ const createFaculty = async (password: string, payload: IFaculty) => {
 
     payload.id = newUser[0].id
     payload.userId = newUser[0]._id
+    payload.image = secure_url
 
     // Create a faculty
     const newFaculty = await Faculty.create([payload], { session })
@@ -115,7 +126,7 @@ const createFaculty = async (password: string, payload: IFaculty) => {
 }
 
 //* Create admin
-const createAdmin = async (password: string, payload: IAdmin) => {
+const createAdmin = async (file: any, password: string, payload: IAdmin) => {
   const user: Partial<IUser> = {}
 
   user.password = password || (config.default_password as string)
@@ -128,6 +139,12 @@ const createAdmin = async (password: string, payload: IAdmin) => {
 
     user.id = await generateAdminId()
 
+    const imageName = `${(payload?.name?.firstName)
+      .toLowerCase()
+      .split(" ")
+      .join("_")}_${user.id}`
+    const { secure_url } = await sendImageToCloudinary(imageName, file?.path)
+
     // Create a user
     const newUser = await User.create([user], { session })
 
@@ -137,6 +154,7 @@ const createAdmin = async (password: string, payload: IAdmin) => {
 
     payload.id = newUser[0].id
     payload.userId = newUser[0]._id
+    payload.image = secure_url
 
     // Create a admin
     const newAdmin = await Admin.create([payload], { session })

@@ -12,19 +12,13 @@ const createUser = catchAsync(async (req, res) => {
 
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty } = req.body
-  const data = await UserServices.createFaculty(password, faculty)
+  const data = await UserServices.createFaculty(req.file, password, faculty)
   sendResponse(res, "Faculty created", data)
 })
 
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin } = req.body
-  const data = await UserServices.createAdmin(password, admin)
-  // console.log("controller : ", data)
-  sendResponse(res, "Admin created", data)
-})
-
-const getAllUser = catchAsync(async (req, res) => {
-  const data = await UserServices.getAllUser()
+  const data = await UserServices.createAdmin(req.file, password, admin)
   sendResponse(res, "Admin created", data)
 })
 
@@ -41,6 +35,5 @@ export const UserControllers = {
   createUser,
   createFaculty,
   createAdmin,
-  getAllUser,
   getMe,
 }

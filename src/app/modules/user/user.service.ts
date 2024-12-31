@@ -16,9 +16,12 @@ import { IFaculty } from "../faculty/faculty.interface"
 import { IAdmin } from "../admin/admin.interface"
 import { Faculty } from "../faculty/faculty.model"
 import { Admin } from "../admin/admin.model"
+import { verifyToken } from "../auth/auth.utils"
+import { JwtPayload } from "jsonwebtoken"
+import { sendImageToCloudinary } from "../../utils/sendImageToCloudinary"
 
 //* Create student
-const createUser = async (password: string, payload: IStudent) => {
+const createUser = async (file: any, password: string, payload: IStudent) => {
   const user: Partial<IUser> = {}
 
   user.password = password || (config.default_password as string)
@@ -35,6 +38,12 @@ const createUser = async (password: string, payload: IStudent) => {
 
     user.id = await generateStudentId(admissionSemester as IAcademicSemester)
 
+    const imageName = `${(payload?.name?.firstName)
+      .toLowerCase()
+      .split(" ")
+      .join("_")}_${user.id}`
+    const { secure_url } = await sendImageToCloudinary(imageName, file?.path)
+
     // Create a user
     const newUser = await User.create([user], { session })
 
@@ -44,6 +53,7 @@ const createUser = async (password: string, payload: IStudent) => {
 
     payload.id = newUser[0].id
     payload.userId = newUser[0]._id
+    payload.image = secure_url
 
     // Create a student
     const newStudent = await Student.create([payload], { session })
@@ -59,6 +69,7 @@ const createUser = async (password: string, payload: IStudent) => {
   } catch (error) {
     session.abortTransaction()
     session.endSession()
+    throw error
   }
 }
 
@@ -150,9 +161,33 @@ const getAllUser = async () => {
   return data
 }
 
+const getMe = async (token: string) => {
+  const decoded = verifyToken(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload
+
+  const { id, role } = decoded
+  console.log({ id, role })
+
+  let result = null
+  if (role === "student") {
+    result = await Student.findOne({ id })
+  }
+  if (role === "faculty") {
+    result = await Faculty.findOne({ id })
+  }
+  if (role === "admin") {
+    result = await Admin.findOne({ id })
+  }
+
+  return result
+}
+
 export const UserServices = {
   createUser,
   createFaculty,
   createAdmin,
   getAllUser,
+  getMe,
 }

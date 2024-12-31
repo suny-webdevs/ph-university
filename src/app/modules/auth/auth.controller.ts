@@ -32,7 +32,7 @@ const forgetPassword = catchAsync(async (req, res) => {
 const resetPassword = catchAsync(async (req, res) => {
   const token = req.headers.authorization
   const data = await AuthServices.resetPassword(token as string, req.body)
-  sendResponse(res, "Token refresh", null)
+  sendResponse(res, "Reset password", null)
 })
 
 export const AuthControllers = {

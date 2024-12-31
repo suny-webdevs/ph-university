@@ -6,7 +6,7 @@ const nameValidationSchema = z.object({
   lastName: z.string(),
 })
 
-const createAdminValidationSchema = z.object({
+export const createAdminValidationSchema = z.object({
   body: z.object({
     password: z
       .string({
@@ -46,7 +46,3 @@ const createAdminValidationSchema = z.object({
     }),
   }),
 })
-
-export const AdminValidationSchemas = {
-  createAdminValidationSchema,
-}

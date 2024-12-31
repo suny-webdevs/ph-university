@@ -8,7 +8,7 @@ const nameValidationSchema = z.object({
 })
 
 // Faculty Schema
-const createFacultyValidationSchema = z.object({
+export const createFacultyValidationSchema = z.object({
   body: z.object({
     password: z
       .string({
@@ -52,7 +52,3 @@ const createFacultyValidationSchema = z.object({
     }),
   }),
 })
-
-export const FacultyValidationSchema = {
-  createFacultyValidationSchema,
-}

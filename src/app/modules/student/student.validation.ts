@@ -26,13 +26,14 @@ const guardianValidationSchema = z.object({
 })
 
 // Student Schema
-const createStudentValidationSchema = z.object({
+export const createStudentValidationSchema = z.object({
   body: z.object({
     password: z
       .string({
         invalid_type_error: "Password must be string",
       })
-      .min(8, { message: "Password must be 8 characters" }),
+      .min(8, { message: "Password must be 8 characters" })
+      .optional(),
     student: z.object({
       name: nameValidationSchema,
       email: z
@@ -41,7 +42,7 @@ const createStudentValidationSchema = z.object({
       phone: z
         .string({ required_error: "Phone is required" })
         .regex(/^\+?[0-9]\d{10,15}$/, "Phone must be a valid number"),
-      image: z.string().url("Image must be a valid URL").optional(),
+      // image: z.string().url("Image must be a valid URL").optional(),
       gender: z.enum(["male", "female", "others"], {
         invalid_type_error: "Gender must be male, female, or others",
         required_error: "Gender is required",
@@ -67,7 +68,3 @@ const createStudentValidationSchema = z.object({
     }),
   }),
 })
-
-export const StudentSchemaValidations = {
-  createStudentValidationSchema,
-}

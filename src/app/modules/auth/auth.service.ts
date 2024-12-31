@@ -2,7 +2,7 @@ import AppError from "../../errors/AppError"
 import { User } from "../user/user.model"
 import { IAuth, IChangePassword } from "./auth.interface"
 import httpStatus from "http-status"
-import createToken from "./auth.utils"
+import { createToken, verifyToken } from "./auth.utils"
 import config from "../../config"
 import { JwtPayload } from "jsonwebtoken"
 import bcrypt from "bcrypt"
@@ -180,6 +180,31 @@ const resetPassword = async (
   if (user?.isDeleted || user?.status === "blocked") {
     throw new AppError(httpStatus.UNAUTHORIZED, "UNAUTHORIZED access")
   }
+
+  const decoded = verifyToken(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload
+
+  console.log(decoded)
+
+  if (payload?.id != decoded.id) {
+    throw new AppError(httpStatus.FORBIDDEN, "FORBIDDEN access")
+  }
+
+  const newHashedPassword = await bcrypt.hash(
+    payload?.newPassword,
+    Number(config.salt_round)
+  )
+
+  await User.findOneAndUpdate(
+    { id: decoded.id, role: decoded.role },
+    {
+      password: newHashedPassword,
+      changePassword: false,
+      passwordChangedAt: new Date(),
+    }
+  )
 }
 
 export const AuthServices = {

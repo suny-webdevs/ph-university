@@ -7,6 +7,7 @@ import config from "../../config"
 import { JwtPayload } from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import { sendMail } from "../../utils/sendMail"
 
 const loginUser = async (payload: IAuth) => {
   if (payload.id === "" || payload.password === "") {
@@ -90,8 +91,9 @@ const refreshToken = async (token: string) => {
 
   const decoded = jwt.verify(
     token as string,
-    config.jwt_access_secret as string
+    config.jwt_refresh_secret as string
   ) as JwtPayload
+
   const { id, iat } = decoded
 
   // Finding user by custom id from token
@@ -129,8 +131,61 @@ const refreshToken = async (token: string) => {
   return { accessToken }
 }
 
+const forgetPassword = async (id: string) => {
+  const user = await User.findOne({ id })
+
+  // Checking if user is not exists
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found")
+  }
+
+  // Checking if user is deleted or user is blocked or required roll not exists
+  if (user?.isDeleted || user?.status === "blocked") {
+    throw new AppError(httpStatus.UNAUTHORIZED, "UNAUTHORIZED access")
+  }
+
+  const jwtPayload = {
+    id: user.id,
+    role: user.role,
+  }
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    "10m"
+  )
+
+  const resetLink = `${config.client_url}?id=${user.id}&token=${resetToken}`
+  sendMail(
+    user?.email,
+    "Reset your password",
+    "Reset your password within 10 minutes.",
+    `${resetLink}`
+  )
+  console.log(resetLink)
+}
+
+const resetPassword = async (
+  token: string,
+  payload: { id: string; newPassword: string }
+) => {
+  const user = await User.findOne({ id: payload?.id })
+
+  // Checking if user is not exists
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found")
+  }
+
+  // Checking if user is deleted or user is blocked or required roll not exists
+  if (user?.isDeleted || user?.status === "blocked") {
+    throw new AppError(httpStatus.UNAUTHORIZED, "UNAUTHORIZED access")
+  }
+}
+
 export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,
+  forgetPassword,
+  resetPassword,
 }

@@ -19,6 +19,6 @@ export interface IAdmin {
   bloodGroup: "A+" | "A-" | "AB+" | "AB-" | "O+" | "O-"
   presentAddress: string
   permanentAddress: string
-  managementDepartment: Types.ObjectId
+  academicDepartment: Types.ObjectId
   isDeleted: boolean
 }

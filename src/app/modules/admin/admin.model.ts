@@ -58,9 +58,10 @@ const adminSchema = new Schema<IAdmin>(
       type: String,
       required: [true, "Present address is required"],
     },
-    managementDepartment: {
+    academicDepartment: {
       type: Schema.Types.ObjectId,
       required: [true, "Management department is required"],
+      ref: "AcademicDepartment",
     },
     isDeleted: { type: Boolean, default: false },
   },

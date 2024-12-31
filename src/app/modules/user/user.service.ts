@@ -23,6 +23,7 @@ const createUser = async (password: string, payload: IStudent) => {
 
   user.password = password || (config.default_password as string)
   user.role = "student"
+  user.email = payload.email
 
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester
@@ -33,7 +34,6 @@ const createUser = async (password: string, payload: IStudent) => {
     session.startTransaction()
 
     user.id = await generateStudentId(admissionSemester as IAcademicSemester)
-    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -59,7 +59,6 @@ const createUser = async (password: string, payload: IStudent) => {
   } catch (error) {
     session.abortTransaction()
     session.endSession()
-    error
   }
 }
 
@@ -69,13 +68,13 @@ const createFaculty = async (password: string, payload: IFaculty) => {
 
   user.password = password || (config.default_password as string)
   user.role = "faculty"
+  user.email = payload.email
 
   const session = await mongoose.startSession()
   try {
     session.startTransaction()
 
     user.id = await generateFacultyId()
-    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -101,7 +100,6 @@ const createFaculty = async (password: string, payload: IFaculty) => {
   } catch (error) {
     session.abortTransaction()
     session.endSession()
-    error
   }
 }
 
@@ -111,13 +109,13 @@ const createAdmin = async (password: string, payload: IAdmin) => {
 
   user.password = password || (config.default_password as string)
   user.role = "admin"
+  user.email = payload.email
 
   const session = await mongoose.startSession()
   try {
     session.startTransaction()
 
     user.id = await generateAdminId()
-    user.email = payload.email
 
     // Create a user
     const newUser = await User.create([user], { session })
@@ -143,7 +141,7 @@ const createAdmin = async (password: string, payload: IAdmin) => {
   } catch (error) {
     session.abortTransaction()
     session.endSession()
-    error
+    throw error
   }
 }
 

@@ -8,12 +8,17 @@ const nameValidationSchema = z.object({
 
 const createAdminValidationSchema = z.object({
   body: z.object({
+    password: z
+      .string({
+        invalid_type_error: "Password must be string",
+      })
+      .min(8, { message: "Password must be 8 characters" }),
     admin: z.object({
       name: nameValidationSchema,
       email: z
         .string({ required_error: "Email is required" })
         .email("Invalid email address"),
-      phone: z
+      contactNo: z
         .string({ required_error: "Phone is required" })
         .regex(/^\+?[0-9]\d{10,15}$/, "Phone must be a valid number"),
       image: z.string().url("Image must be a valid URL").optional(),
@@ -22,7 +27,7 @@ const createAdminValidationSchema = z.object({
         required_error: "Gender is required",
       }),
       dateOfBirth: z.string({ required_error: "Date of birth is required" }),
-      emergencyPhone: z
+      emergencyContactNo: z
         .string({ required_error: "Emergency contact is required" })
         .regex(/^\+?[0-9]\d{10,15}$/, "Emergency phone must be a valid number"),
       bloodGroup: z.enum(["A+", "A-", "AB+", "AB-", "O+", "O-"], {

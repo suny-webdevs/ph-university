@@ -10,6 +10,11 @@ const nameValidationSchema = z.object({
 // Faculty Schema
 const createFacultyValidationSchema = z.object({
   body: z.object({
+    password: z
+      .string({
+        invalid_type_error: "Password must be string",
+      })
+      .min(8, { message: "Password must be 8 characters" }),
     faculty: z.object({
       name: nameValidationSchema,
       email: z

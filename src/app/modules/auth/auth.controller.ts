@@ -24,8 +24,21 @@ const refreshToken = catchAsync(async (req, res) => {
   sendResponse(res, "Token refresh", data)
 })
 
+const forgetPassword = catchAsync(async (req, res) => {
+  const data = await AuthServices.forgetPassword(req.body.id)
+  sendResponse(res, "Reset link generated", null)
+})
+
+const resetPassword = catchAsync(async (req, res) => {
+  const token = req.headers.authorization
+  const data = await AuthServices.resetPassword(token as string, req.body)
+  sendResponse(res, "Token refresh", null)
+})
+
 export const AuthControllers = {
   loginUser,
   changePassword,
   refreshToken,
+  forgetPassword,
+  resetPassword,
 }

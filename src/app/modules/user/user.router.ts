@@ -12,21 +12,18 @@ const router = Router()
 router.post(
   "/create-student",
   auth("admin"),
-  validateRequest(UserSchemaValidations.createUserValidationSchema),
   validateRequest(StudentSchemaValidations.createStudentValidationSchema),
   UserControllers.createUser
 )
 router.post(
   "/create-faculty",
   auth("admin"),
-  validateRequest(UserSchemaValidations.createUserValidationSchema),
   validateRequest(FacultyValidationSchema.createFacultyValidationSchema),
   UserControllers.createFaculty
 )
 router.post(
   "/create-admin",
-  auth("admin"),
-  validateRequest(UserSchemaValidations.createUserValidationSchema),
+  // auth("admin"),
   validateRequest(AdminValidationSchemas.createAdminValidationSchema),
   UserControllers.createAdmin
 )

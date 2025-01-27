@@ -12,7 +12,7 @@ const router = Router()
 
 router.post(
   "/create-student",
-  auth("admin"),
+  auth("superAdmin", "admin"),
   upload.single("file"),
   textToJson(),
   validateRequest(createStudentValidationSchema),
@@ -20,7 +20,7 @@ router.post(
 )
 router.post(
   "/create-faculty",
-  auth("admin"),
+  auth("superAdmin", "admin"),
   upload.single("file"),
   textToJson(),
   validateRequest(createFacultyValidationSchema),
@@ -28,7 +28,7 @@ router.post(
 )
 router.post(
   "/create-admin",
-  // auth("admin"),
+  auth("superAdmin"),
   upload.single("file"),
   textToJson(),
   validateRequest(createAdminValidationSchema),

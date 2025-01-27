@@ -1,7 +1,19 @@
+import AppError from "../../errors/AppError"
+import { AcademicFaculty } from "../academicFaculty/academicFaculty.model"
 import { IAcademicDepartment } from "./academicDepartment.interface"
 import { AcademicDepartment } from "./academicDepartment.model"
+import httpStatus from "http-status"
 
 const createAcademicDepartment = async (payload: IAcademicDepartment) => {
+  const { academicFaculty } = payload
+
+  const isAcademicFacultyExists = await AcademicFaculty.findById(
+    academicFaculty
+  )
+  if (!isAcademicFacultyExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic faculty is not found")
+  }
+
   const data = await AcademicDepartment.create(payload)
   return data
 }

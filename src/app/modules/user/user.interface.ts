@@ -3,7 +3,7 @@ import { USER_ROLE } from "./user.constant"
 
 export interface IUser {
   id: string
-  role: "student" | "faculty" | "admin"
+  role: "superAdmin" | "student" | "faculty" | "admin"
   status: "active" | "in-progress" | "blocked"
   email: string
   password: string

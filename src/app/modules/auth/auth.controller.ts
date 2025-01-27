@@ -10,7 +10,7 @@ const loginUser = catchAsync(async (req, res) => {
     secure: config.NODE_ENV === "production",
     httpOnly: true,
   })
-  const data = { accessToken, changePassword }
+  const data = { token: accessToken, changePassword }
   sendResponse(res, "Login", data)
 })
 

@@ -2,6 +2,7 @@ import { Router } from "express"
 import { AcademicSemesterControllers } from "./academicSemester.controller"
 import validateRequest from "../../middlewares/validateRequest"
 import { AcademicSemesterValidations } from "./academicSemester.validation"
+import auth from "../../middlewares/auth"
 
 const router = Router()
 
@@ -12,7 +13,11 @@ router.post(
   ),
   AcademicSemesterControllers.createAcademicSemester
 )
-router.get("", AcademicSemesterControllers.getAcademicSemesters)
+router.get(
+  "",
+  auth("admin", "superAdmin"),
+  AcademicSemesterControllers.getAcademicSemesters
+)
 router.get("/:id", AcademicSemesterControllers.getAcademicSemester)
 router.patch(
   "/:id",

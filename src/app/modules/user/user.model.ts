@@ -9,7 +9,7 @@ const userSchema = new Schema<IUser, UserModel>(
     role: {
       type: String,
       enum: {
-        values: ["student", "faculty", "admin"],
+        values: ["superAdmin", "student", "faculty", "admin"],
         message: "{VALUE} is not a valid role",
       },
       required: [true, "Role is required"],

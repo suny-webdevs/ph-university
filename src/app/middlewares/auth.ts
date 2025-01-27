@@ -11,7 +11,7 @@ const auth = (...requiredRole: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "Look like you are not login")
+      throw new AppError(httpStatus.UNAUTHORIZED, "UNAUTHORIZED access")
     }
 
     const decoded = jwt.verify(

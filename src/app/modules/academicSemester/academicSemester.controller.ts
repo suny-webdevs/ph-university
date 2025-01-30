@@ -11,7 +11,7 @@ const createAcademicSemester = catchAsync(async (req, res) => {
 })
 
 const getAcademicSemesters = catchAsync(async (req, res) => {
-  const data = await AcademicSemesterServices.getAcademicSemesters()
+  const data = await AcademicSemesterServices.getAcademicSemesters(req.query)
   sendResponse(res, "Get academic semesters", data)
 })
 

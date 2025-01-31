@@ -22,12 +22,12 @@ const getAcademicSemesters = async (query: Record<string, unknown>) => {
     .pagination()
     .fields()
 
-  const result = await academicSemesterQuery.queryModel
+  const data = await academicSemesterQuery.queryModel
   const meta = await academicSemesterQuery.countTotal()
 
   return {
+    data,
     meta,
-    result,
   }
 }
 

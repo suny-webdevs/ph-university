@@ -11,8 +11,10 @@ const createAcademicFaculty = catchAsync(async (req, res) => {
 })
 
 const getAllAcademicFaculty = catchAsync(async (req, res) => {
-  const data = await AcademicFacultyServices.getAllAcademicFaculty()
-  sendResponse(res, "Get academic faculties", data)
+  const { data, meta } = await AcademicFacultyServices.getAllAcademicFaculty(
+    req.query
+  )
+  sendResponse(res, "Get academic faculties", { data, meta })
 })
 
 const getAcademicFaculty = catchAsync(async (req, res) => {

@@ -1,5 +1,7 @@
+import QueryBuilder from "../../builder/QueryBuilder"
 import AppError from "../../errors/AppError"
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model"
+import { AcademicDepartmentSearchableFields } from "./academicDepartment.constant"
 import { IAcademicDepartment } from "./academicDepartment.interface"
 import { AcademicDepartment } from "./academicDepartment.model"
 import httpStatus from "http-status"
@@ -18,9 +20,24 @@ const createAcademicDepartment = async (payload: IAcademicDepartment) => {
   return data
 }
 
-const getAllAcademicDepartment = async () => {
-  const data = await AcademicDepartment.find().populate("academicFaculty")
-  return data
+const getAllAcademicDepartment = async (query: Record<string, unknown>) => {
+  const academicDepartmentQuery = new QueryBuilder(
+    AcademicDepartment.find().populate("academicFaculty"),
+    query
+  )
+    .search(AcademicDepartmentSearchableFields)
+    .filter()
+    .sort()
+    .pagination()
+    .fields()
+
+  const data = await academicDepartmentQuery.queryModel
+  const meta = await academicDepartmentQuery.countTotal()
+
+  return {
+    data,
+    meta,
+  }
 }
 
 const getAcademicDepartment = async (id: string) => {

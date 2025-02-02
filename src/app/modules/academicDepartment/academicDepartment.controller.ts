@@ -10,8 +10,9 @@ const createAcademicDepartment = catchAsync(async (req, res) => {
 })
 
 const getAllAcademicDepartments = catchAsync(async (req, res) => {
-  const data = await AcademicDepartmentServices.getAllAcademicDepartment()
-  sendResponse(res, "Get all academic departments", data)
+  const { data, meta } =
+    await AcademicDepartmentServices.getAllAcademicDepartment(req.query)
+  sendResponse(res, "Get all academic departments", { data, meta })
 })
 
 const getAcademicDepartment = catchAsync(async (req, res) => {

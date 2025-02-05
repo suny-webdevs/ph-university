@@ -55,7 +55,7 @@ const createUser = async (file: any, password: string, payload: IStudent) => {
     payload.userId = newUser[0]._id
     payload.image = secure_url
 
-    // Create a student
+    //* ======================= Create a student =======================
     const newStudent = await Student.create([payload], { session })
 
     if (!newStudent.length) {
@@ -73,7 +73,7 @@ const createUser = async (file: any, password: string, payload: IStudent) => {
   }
 }
 
-//* Create faculty
+//* ======================= Create faculty =======================
 const createFaculty = async (
   file: any,
   password: string,
@@ -125,7 +125,7 @@ const createFaculty = async (
   }
 }
 
-//* Create admin
+//* ======================= Create admin =======================
 const createAdmin = async (file: any, password: string, payload: IAdmin) => {
   const user: Partial<IUser> = {}
 

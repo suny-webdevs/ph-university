@@ -1,4 +1,4 @@
-import { StudentServices } from "./students.services"
+import { StudentServices } from "./students.service"
 import sendResponse from "../../utils/sendResponse"
 import catchAsync from "../../utils/catchAsync"
 

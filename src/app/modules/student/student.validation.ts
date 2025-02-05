@@ -51,7 +51,7 @@ export const createStudentValidationSchema = z.object({
       emergencyPhone: z
         .string({ required_error: "Emergency contact is required" })
         .regex(/^\+?[0-9]\d{10,15}$/, "Emergency phone must be a valid number"),
-      bloodGroup: z.enum(["A+", "A-", "AB+", "AB-", "O+", "O-"], {
+      bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], {
         invalid_type_error: "Invalid blood group",
         required_error: "Blood group is required",
       }),

@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose"
 import { IGuardian, IName, IStudent } from "./students.interface"
 import AppError from "../../errors/AppError"
+import { bloodGroup } from "./student.constant"
 
 const studentNameSchema = new Schema<IName>({
   firstName: {
@@ -73,7 +74,7 @@ const studentSchema = new Schema<IStudent>(
     bloodGroup: {
       type: String,
       enum: {
-        values: ["A+", "A-", "AB+", "AB-", "O+", "O-"],
+        values: bloodGroup,
         message: "{VALUE} is not a valid blood group",
       },
       required: [true, "Blood group is required"],

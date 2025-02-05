@@ -4,3 +4,5 @@ export const searchAbleFields = [
   "name.middleName",
   "name.lastName",
 ]
+
+export const bloodGroup = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
